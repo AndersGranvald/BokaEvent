@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title> Bokningsläget för våra event i Visby IBK </title>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+<link rel="stylesheet" href="css/styles.css" type="text/css" media="screen"/>
+
+<style>
+body {
+	background-color: #EEF2F7;
+	font-family: Eurostile;
+	background-image: "";
+}
+
+
+.navbar-brand img {
+	margin-bottom: 5px;
+	margin-top: -10px;
+	width:70px;
+	height: 40px;
+}
+
+.navbar {
+    margin-bottom: 0;
+    background-color: #5B8BC4;
+    border: 0;
+    font-size: 12px;
+    letter-spacing: 4px;
+    border-radius: 0;
+}
+#myNavbar li a {
+	color: #FFF;
+}
+.navbar-default .navbar-toggle .icon-bar {
+	background-color: #FFF;
+}
+
+form {
+	padding-top: 0px;
+	padding-bottom: 30px;
+	margin: 0 auto;
+}
+
+#chooseGameSelect {
+	margin: 0 auto;
+}
+
+.row {
+	margin-top: 0px;
+}
+
+form #boka {
+	/* float: right; */
+}
+
+label {
+	font-weight: bold;
+}
+
+#lounge {
+	text-align: center;
+}
+
+#starttext h3 {
+	text-align: center;
+}
+#starttext p {
+	text-align: center;
+}
+
+table, th, td {
+    
+    border-collapse: collapse;
+}
+th, td {
+    padding: 0px;
+    cellspacing : 0 px;
+}
+td#num {
+  text-align :center;
+}
+th {
+    text-align: left;
+}
+
+
+/* ============= ADMIN ============= */
+
+#chosenLounges {
+	margin-top: 50px;
+	text-align: center;
+	margin-bottom: 40px;
+}
+
+#chosenLounges h1 {
+	text-align: center;
+	font-weight: normal;
+}
+
+#chosenLounges label {
+	width: 140px;
+}
+
+@media (max-width: 480px){
+	#chosenLounges label {
+		font-size: 9px;
+		width: 50px;
+	}
+}
+
+
+hr {
+	border-top: 1px solid #5B8BC4;
+	width: 200px;
+	margin-bottom: -5px;
+}
+
+footer {
+	height: 80px;
+	background-color: #5B8BC4;
+	color: #EEF2F7;
+}
+
+footer h3 {
+	text-align: center;
+	font-weight: lighter;
+	padding-top: 30px;
+}
+
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+</head>
+
+
+
+
+
+<script>
+//
+//      ++++++++++++++++++++++++++++++   SCRIPT  START  ++++++++++++++++++++++++++++++
+//
+
+//var serverURL = "http://localhost:3000";
+var serverURL = "http://81.225.223.254:3000";
+var reservations = null;
+
+
+ 
+//++
+//
+// A $( document ).ready() block.
+//
+//--
+$( document ).ready(function() {
+   
+//  alert( "document loaded" );  
+  getStatusInfo(); 
+  
+  
+}); // document ready
+
+
+function getStatusInfo () {
+   var url = serverURL + "/api/status-content";
+   
+//   alert ("In getStatusInfo" + url);
+
+   $.get (url,{id:1},
+          function (data) {
+            var totaltBokat = 0;
+            reservations = JSON.parse(data);
+            reservations.forEach (function (obj, index) {
+              totaltBokat += Number (obj.numPersons);
+  			  populateTable (obj);
+  			});
+  			var tot = document.getElementById('antal');
+  			tot.innerHTML = totaltBokat.toString();     
+          },"text");   
+ }  // getStatusInfo
+
+
+function populateTable (res) {
+  var theTable = document.getElementById('appendHere');
+  var row = theTable.insertRow (-1); // insert last
+  var cell1 = row.insertCell(0);
+  var cell2 = row.insertCell(1);
+  var cell3 = row.insertCell(2);
+  var cell4 = row.insertCell(3);
+  var cell5 = row.insertCell(4);
+  var cell6 = row.insertCell(5);
+ 
+  var tdate = res.transactionDate.split("T");
+
+  cell1.innerHTML = res.coName;
+  cell2.innerHTML = res.contact;
+  cell3.innerHTML = res.phone;
+  cell4.innerHTML = res.numPersons;
+  cell5.innerHTML = tdate[0]; 
+  cell6.innerHTML = res.status; 
+ 
+
+}
+
+
+//
+//      ++++++++++++++++++++++++++++++   SCRIPT  END  ++++++++++++++++++++++++++++++
+//
+
+
+</script>
+
+
+
+
+
+<body>
+
+
+
+
+
+<form class="container-fluid">
+<fieldset>
+
+
+
+	<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="starttext">
+     
+     <div class="row">
+     
+       
+
+	<div class="col-xs-6 col-md-6">
+		<H3>Aktuella bokningar.</H3>
+		<p>Här är en lista över bokningar gjorda till IBKs avslutning och auktion den 5/5 2018.
+		<br>
+		Totalt har <a id="antal">0</a> platser bokats. 
+		<br>
+		
+	<div id ="resultat">
+
+		<table id="appendHere">
+ 		 <tr>
+    		<th style="width:350px">Företag</th>
+    		<th style="width:300px">Kontakt</th> 
+    		<th style="width:200px">Telefon</th>
+   			<th style="width:80px">Antal</th>
+   			<th style="width:200px">Bokat den</th>
+    		<th style="width:80px">Status</th>
+  		</tr>
+		</table>
+
+
+	</div>
+		
+	</div>
+
+	</div><!-- row -->
+	</div>
+
+	
+ 	</fieldset>
+</form>
+
+
+		
+</body>
+</html>

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title> Skapa Event med Visby IBK </title>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+<link rel="stylesheet" href="css/styles.css" type="text/css" media="screen"/>
+
+<style>
+body {
+	background-color: #EEF2F7;
+	font-family: Eurostile;
+	background-image: "";
+}
+
+
+.navbar-brand img {
+	margin-bottom: 5px;
+	margin-top: -10px;
+	width:70px;
+	height: 40px;
+}
+
+.navbar {
+    margin-bottom: 0;
+    background-color: #5B8BC4;
+    border: 0;
+    font-size: 12px;
+    letter-spacing: 4px;
+    border-radius: 0;
+}
+#myNavbar li a {
+	color: #FFF;
+}
+.navbar-default .navbar-toggle .icon-bar {
+	background-color: #FFF;
+}
+
+form {
+	padding-top: 0px;
+	padding-bottom: 30px;
+	margin: 0 auto;
+}
+
+#chooseGameSelect {
+	margin: 0 auto;
+}
+
+.row {
+	margin-top: 0px;
+}
+
+form #boka {
+	/* float: right; */
+}
+
+label {
+	font-weight: bold;
+}
+
+#lounge {
+	text-align: center;
+}
+
+#starttext h3 {
+	text-align: center;
+}
+#starttext p {
+	text-align: center;
+}
+
+
+
+/* ============= ADMIN ============= */
+
+#chosenLounges {
+	margin-top: 50px;
+	text-align: center;
+	margin-bottom: 40px;
+}
+
+#chosenLounges h1 {
+	text-align: center;
+	font-weight: normal;
+}
+
+#chosenLounges label {
+	width: 140px;
+}
+
+@media (max-width: 480px){
+	#chosenLounges label {
+		font-size: 9px;
+		width: 50px;
+	}
+}
+
+
+hr {
+	border-top: 1px solid #5B8BC4;
+	width: 200px;
+	margin-bottom: -5px;
+}
+
+footer {
+	height: 80px;
+	background-color: #5B8BC4;
+	color: #EEF2F7;
+}
+
+footer h3 {
+	text-align: center;
+	font-weight: lighter;
+	padding-top: 30px;
+}
+
+</style>
+
+</head>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js">  </script>
+
+<script src="/socket.io/socket.io.js"></script>
+
+
+
+<script>
+//
+//      ++++++++++++++++++++++++++++++   SCRIPT  START  ++++++++++++++++++++++++++++++
+//
+
+var serverURL = "http://localhost:3000";
+//var serverURL = "http:/52.209.50.228:3000";
+
+
+ 
+//++
+//
+// A $( document ).ready() block.
+//
+//--
+$( document ).ready(function() {
+   
+ 
+ 
+
+}); // document ready
+
+
+
+function bokaButtonPressed () {
+
+
+  var companyName = document.getElementById('companyName').value;
+  var contactInfo = document.getElementById('contact').value;
+  var numPersons = document.getElementById('numPersons').value;
+  var err = false;
+    
+  err = verifyFields (companyName, "Företagsnamn måste fyllas i");
+  err = verifyFields (contactInfo, "Namn och telefon till kontakt behöver fyllas i");
+  err = verifyFields (numPersons, "Antal personer behöver anges");
+  err = verifyMaxNum (Number(numPersons), 2, "Tyvärr kan du bara boka 1 eller max 2 platser.");
+  
+  if (!err) {
+    // skicka meddelande till server
+    var url = serverURL + "/api/reservations";
+
+    
+    
+    $.post(url, { Ftg:companyName, Namn:contactInfo, Antal:numPersons }, function(data){
+      if(data="OK") {
+        var msg = "Vi har reserverat " + numPersons + " platser på bion. \nVälkomna!";
+        alert (msg);
+        clearAllBookingData();
+      }
+      else {
+         alert ("Bokningen gick inte att genomföra. Försök igen senare.");
+      }
+     },"text");
+
+  } // if ! err
+  
+} // bokaButtonPressed
+
+
+
+function verifyFields (txt, error) {
+  var retval = true;
+  if (txt == "") {
+    alert (error);
+  } else {
+    retval = false;
+  }
+  
+  return retval;
+  
+} // verifyFields
+
+function verifyMaxNum (num, maxnum, error) {
+  var retval = true;
+  if ((num > maxnum) || (num < 1)){
+    alert (error);
+  } else {
+    retval = false;
+  }
+  
+  return retval;
+  
+} // verifyFields
+
+
+
+function clearAllBookingData (toWho) {
+
+  document.getElementById('companyName').value = "";
+  document.getElementById('contactInfo').value = "";
+  document.getElementById('numPersons').value = "";
+  
+} // clearAllBookingData
+
+
+//
+//      ++++++++++++++++++++++++++++++   SCRIPT  END  ++++++++++++++++++++++++++++++
+//
+
+
+</script>
+
+<body>
+
+
+
+
+
+<form class="container-fluid">
+<fieldset>
+
+
+
+	<div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="starttext">
+     
+     <div class="row">
+     
+       <div class="col-xs-3 col-md-3">
+         <a href ="" class="thumbnail">
+         <img src="http://localhost:3000/borgen.jpg">
+         </a>
+       </div>
+
+<div class="col-xs-6 col-md-6">
+		<H3>Här skapar du ett nytt event!</H3>
+		<p>Den x/1 2017 är det dags för ett sponsorevent.<br>
+		Som sponsor har du möjlighet att boka 37 platser till filmen 
+		Bernard & Bianca kastar loss.
+		Vi har abonnerat hela Salong 1 och filmen börjar kl 13.00 
+		<br>
+
+	
+<strong font-size="24px">Varmt välkomna till Visby IBK och Biostaden Borgen!</strong></p>
+
+	
+
+</div>
+
+	</div><!-- row -->
+	</div>
+	
+ <div class="row">
+  	<div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-4">
+    	<label for="inputFirstName">Företag</label>
+    	<input type="text" class="form-control" id="companyName" placeholder="Acme co">
+  	</div>
+  	</div><!-- row -->
+
+<div class="row">  	
+  	<div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-4">
+    	<label for="inputLastName">Kontaktperson och telefon</label>
+    	<input type="text" class="form-control" id="contact" placeholder="Wile E. Coyote, 070-444 9950">
+  	</div>
+  </div><!-- row -->
+	
+
+  
+  <div class="row">
+  	<div class="form-group col-lg-1 col-md-1 col-sm-1 col-xs-1">
+    	<label for="inputFirstName">Antal platser</label>
+    	<input type="text" class="form-control" id="numPersons" placeholder="2">
+  	</div>
+  	
+ </div>
+  
+  <button type="button" id="boka" class="btn btn-primary" onclick="bokaButtonPressed()">Skicka Anmälan</button>
+</fieldset>
+</form>
+
+
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> <!-- JQuery -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>	
+	<script src="js/script.js"></script>
+		
+</body>
+</html>
